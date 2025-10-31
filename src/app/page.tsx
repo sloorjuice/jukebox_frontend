@@ -18,7 +18,7 @@ export default function Home() {
             <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-10 h-fit">
               <h2 className="text-xl font-semibold mb-4">Queue</h2>
               <div className="space-y-3">
-                {[1, 2, 3, 4, 5].map((item) => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
                   <div key={item} className="flex items-center gap-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
                     <div className="w-12 h-12 bg-gray-300 dark:bg-gray-700 rounded"></div>
                     <div className="flex-1 min-w-0">
@@ -43,11 +43,16 @@ export default function Home() {
                     {isUrlMode ? "Search by text?" : "Have a YT URL?"}
                   </button>
                 </div>
-                <input
-                  type="text"
-                  placeholder={isUrlMode ? "Enter a YT URL..." : "Enter a search prompt..."}
-                  className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder={isUrlMode ? "Enter a YT URL..." : "Enter a search prompt..."}
+                    className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                  <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">
+                    Request
+                  </button>
+                </div>
               </div>
 
               <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
@@ -96,7 +101,7 @@ export default function Home() {
                       max="100"
                       value={volume}
                       onChange={(e) => setVolume(Number(e.target.value))}
-                      className="w-full h-2 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:hover:bg-blue-700 [&::-webkit-slider-thumb]:transition-colors [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-600 [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer [&::-moz	range-thumb]:shadow-md [&::-moz-range-thumb]:hover:bg-blue-700 [&::-moz	range-thumb]:transition-colors"
+                      className="w-full h-2 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:hover:bg-blue-700 [&::-webkit-slider-thumb]:transition-colors [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz	range-thumb]:bg-blue-600 [&::-moz	range-thumb]:border-0 [&::-moz	range-thumb]:cursor-pointer [&::-moz	range-thumb]:shadow-md [&::-moz	range-thumb]:hover:bg-blue-700 [&::-moz	range-thumb]:transition-colors"
                       style={{
                         background: `linear-gradient(to right, rgb(37, 99, 235) 0%, rgb(37, 99, 235) ${volume}%, rgb(229, 231, 235) ${volume}%, rgb(229, 231, 235) 100%)`
                       }}
