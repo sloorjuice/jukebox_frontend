@@ -1,17 +1,57 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { getAudioDevices, getCurrentAudioDevice, setAudioDevice, type AudioDevice } from '@/lib/api';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState('Select Device');
+    const [devices, setDevices] = useState<AudioDevice[]>([]);
+    const [selected, setSelected] = useState<AudioDevice | null>(null);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const devices = ['Built-in Speaker', 'Bluetooth Headphones', 'USB Audio'];
+    const loadDevices = useCallback(async () => {
+        try {
+            const deviceList = await getAudioDevices();
+            setDevices(deviceList);
+        } catch (error) {
+            console.error('Failed to load devices:', error);
+        }
+    }, []);
 
-    const handleRefresh = () => {
+    const loadCurrentDevice = useCallback(async () => {
+        try {
+            const current = await getCurrentAudioDevice();
+            setSelected(current);
+        } catch (error) {
+            console.error('Failed to load current device:', error);
+        }
+    }, []);
+
+    // Load initial devices and current device
+    useEffect(() => {
+        const initialize = async () => {
+            await loadDevices();
+            await loadCurrentDevice();
+        };
+        
+        initialize();
+    }, [loadDevices, loadCurrentDevice]);
+
+    const handleRefresh = async () => {
         setIsRefreshing(true);
+        await loadDevices();
+        await loadCurrentDevice();
         setTimeout(() => setIsRefreshing(false), 1000);
+    };
+
+    const handleDeviceSelect = async (device: AudioDevice) => {
+        try {
+            await setAudioDevice(device.device_id);
+            setSelected(device);
+            setIsOpen(false);
+        } catch (error) {
+            console.error('Failed to set device:', error);
+        }
     };
 
     return (
@@ -26,21 +66,18 @@ export default function Navbar() {
                                 onClick={() => setIsOpen(!isOpen)}
                                 className="inline-flex items-center justify-between w-48 px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-sm hover:bg-gray-200 dark:hover:bg-gray-700"
                             >
-                                <span>{selected}</span>
+                                <span className="truncate">{selected?.description || 'Select Device'}</span>
                                 <span className="ml-2">▼</span>
                             </button>
                             {isOpen && (
-                                <div className="absolute mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg z-50">
+                                <div className="absolute mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg z-50 max-h-64 overflow-y-auto">
                                     {devices.map((device) => (
                                         <button
-                                            key={device}
-                                            onClick={() => {
-                                                setSelected(device);
-                                                setIsOpen(false);
-                                            }}
+                                            key={device.device_id || 'default'}
+                                            onClick={() => handleDeviceSelect(device)}
                                             className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                                         >
-                                            {device}
+                                            {device.description}
                                         </button>
                                     ))}
                                 </div>
