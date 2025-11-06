@@ -7,7 +7,14 @@ interface ProgressData {
   is_playing: boolean;
 }
 
-export function useJukeboxEvents(url = 'http://localhost:8000/events') {
+export function useJukeboxEvents(url?: string) {
+  // Resolve default to current page host so clients connecting to jukebox.local connect back to the server
+  const resolvedUrl =
+    url ||
+    (typeof window !== 'undefined'
+      ? `${window.location.protocol}//${window.location.hostname}:8000/events`
+      : 'http://localhost:8000/events');
+
   const [currentSong, setCurrentSong] = useState<CurrentSong | null>(null);
   const [queue, setQueue] = useState<Song[]>([]);
   const [volume, setVolume] = useState(100);
@@ -24,7 +31,7 @@ export function useJukeboxEvents(url = 'http://localhost:8000/events') {
 
     const connect = () => {
       try {
-        eventSource = new EventSource(url);
+        eventSource = new EventSource(resolvedUrl);
 
         eventSource.addEventListener('connected', () => {
           console.log('SSE connected');
@@ -151,7 +158,7 @@ export function useJukeboxEvents(url = 'http://localhost:8000/events') {
       }
       setIsConnected(false);
     };
-  }, [url]);
+  }, [resolvedUrl]);
 
   return {
     currentSong,
