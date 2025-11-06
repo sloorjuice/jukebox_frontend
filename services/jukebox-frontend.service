@@ -1,6 +1,7 @@
 [Unit]
 Description=Jukebox Frontend (Next.js)
 After=network.target
+ConditionPathExists=/Users/sloor/Developer/jukebox_frontend/.next
 
 [Service]
 Type=simple
@@ -9,12 +10,17 @@ Group=jukebox
 WorkingDirectory=/Users/sloor/Developer/jukebox_frontend
 Environment=NODE_ENV=production
 Environment=PORT=3000
-Environment=PATH=/usr/bin:/usr/local/bin:/bin:/usr/sbin:/usr/local/sbin
+# include common locations (add /opt/homebrew/bin if using Homebrew on macOS)
+Environment=PATH=/usr/bin:/usr/local/bin:/bin:/usr/sbin:/usr/local/sbin:/opt/homebrew/bin
 
-ExecStart=/usr/bin/npm run start
+# use /usr/bin/env so npm is resolved via PATH
+ExecStart=/usr/bin/env npm run start
 Restart=always
 RestartSec=5
 LimitNOFILE=65536
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=jukebox_frontend
 
 [Install]
 WantedBy=multi-user.target
