@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { API_BASE_URL } from '@/lib/api';
 import type { Song, CurrentSong } from '@/lib/api';
 
 interface ProgressData {
@@ -9,12 +8,17 @@ interface ProgressData {
 }
 
 export function useJukeboxEvents(url?: string) {
-  // Resolve default to configured API base so clients always connect to the backend host
+  // Resolve default to the current page host so clients that open jukebox.local connect to jukebox.local:8000
   const resolvedUrl =
     url ||
     (typeof window !== 'undefined'
-      ? `${API_BASE_URL.replace(/\/$/, '')}/events`
+      ? `${window.location.protocol}//${window.location.hostname}:8000/events`
       : 'http://localhost:8000/events');
+  
+  // debug: log the resolved SSE URL in the browser console
+  if (typeof window !== 'undefined') {
+    console.log('[useJukeboxEvents] SSE resolvedUrl=', resolvedUrl);
+  }
 
   const [currentSong, setCurrentSong] = useState<CurrentSong | null>(null);
   const [queue, setQueue] = useState<Song[]>([]);
